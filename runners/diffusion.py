@@ -337,7 +337,7 @@ class Diffusion(object):
         avg_psnr = avg_psnr / (idx_so_far - idx_init)
         avg_lpips = avg_lpips / (idx_so_far - idx_init)
         print("Total Average PSNR: %.2f" % avg_psnr)
-        print("Total Average LPIPS: %.2f" % avg_lpips)
+        print("Total Average LPIPS: %.2f" % float(avg_lpips))
         print("Number of samples: %d" % (idx_so_far - idx_init))
 
     def sample_image(self, x, model, H_funcs, y_0, sigma_0, last=True, cls_fn=None, classes=None):
