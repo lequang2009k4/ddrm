@@ -325,7 +325,7 @@ class Diffusion(object):
                         mse = torch.mean((x[i][j].to(self.device) - orig) ** 2)
                         psnr = 10 * torch.log10(1 / mse)
                         avg_psnr += psnr
-            lpips_final = torch.squeeze(loss_fn_vgg(x[0], x_orig.to('cpu'))).detach().numpy()
+            lpips_final = torch.squeeze(loss_fn_vgg(x[0].to('cuda'), x_orig.to('cuda'))).detach().cpu().numpy()
             avg_lpips += lpips_final
 
             idx_so_far += y_0.shape[0]
