@@ -331,8 +331,8 @@ class Diffusion(object):
 
             idx_so_far += y_0.shape[0]
 
-            pbar.set_description("PSNR: %.2f" % (avg_psnr / (idx_so_far - idx_init)))
-            pbar.set_description("LPIPS: %.2f" % (avg_lpips / (idx_so_far - idx_init)))
+            # pbar.set_description("PSNR: %.2f" % (avg_psnr / (idx_so_far - idx_init)))
+            # pbar.set_description("LPIPS: %.2f" % float(avg_lpips / (idx_so_far - idx_init)))
 
         avg_psnr = avg_psnr / (idx_so_far - idx_init)
         avg_lpips = avg_lpips / (idx_so_far - idx_init)
