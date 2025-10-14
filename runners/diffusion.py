@@ -2,6 +2,7 @@ import os
 import logging
 import time
 import glob
+import lpips
 
 import numpy as np
 import tqdm
@@ -18,6 +19,8 @@ import torchvision.utils as tvu
 from guided_diffusion.unet import UNetModel
 from guided_diffusion.script_util import create_model, create_classifier, classifier_defaults, args_to_dict
 import random
+
+loss_fn_vgg = lpips.LPIPS(net='vgg')
 
 def get_beta_schedule(beta_schedule, *, beta_start, beta_end, num_diffusion_timesteps):
     def sigmoid(x):
@@ -274,6 +277,7 @@ class Diffusion(object):
         print(f'Start from {args.subset_start}')
         idx_init = args.subset_start
         idx_so_far = args.subset_start
+        avg_lpips = 0.0
         avg_psnr = 0.0
         pbar = tqdm.tqdm(val_loader)
         for x_orig, classes in pbar:
@@ -321,13 +325,18 @@ class Diffusion(object):
                         mse = torch.mean((x[i][j].to(self.device) - orig) ** 2)
                         psnr = 10 * torch.log10(1 / mse)
                         avg_psnr += psnr
+            lpips_final = torch.squeeze(loss_fn_vgg(x[0], x_orig.to('cpu'))).detach().numpy()
+            avg_lpips += lpips_final
 
             idx_so_far += y_0.shape[0]
 
             pbar.set_description("PSNR: %.2f" % (avg_psnr / (idx_so_far - idx_init)))
+            pbar.set_description("LPIPS: %.2f" % (avg_lpips / (idx_so_far - idx_init)))
 
         avg_psnr = avg_psnr / (idx_so_far - idx_init)
+        avg_lpips = avg_lpips / (idx_so_far - idx_init)
         print("Total Average PSNR: %.2f" % avg_psnr)
+        print("Total Average LPIPS: %.2f" % avg_lpips)
         print("Number of samples: %d" % (idx_so_far - idx_init))
 
     def sample_image(self, x, model, H_funcs, y_0, sigma_0, last=True, cls_fn=None, classes=None):
