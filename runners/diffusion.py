@@ -338,6 +338,8 @@ class Diffusion(object):
         avg_lpips = avg_lpips / (idx_so_far - idx_init)
         print("Total Average PSNR: %.2f" % avg_psnr)
         print("Total Average LPIPS: %.2f" % float(avg_lpips.mean()))
+        print("Total Average LPIPS: %.2f" % avg_lpips.item())
+
 
         print("Number of samples: %d" % (idx_so_far - idx_init))
 
