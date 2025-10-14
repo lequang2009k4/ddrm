@@ -20,7 +20,8 @@ from guided_diffusion.unet import UNetModel
 from guided_diffusion.script_util import create_model, create_classifier, classifier_defaults, args_to_dict
 import random
 
-loss_fn_vgg = lpips.LPIPS(net='vgg')
+loss_fn_vgg = lpips.LPIPS(net='vgg').to('cuda')
+
 
 def get_beta_schedule(beta_schedule, *, beta_start, beta_end, num_diffusion_timesteps):
     def sigmoid(x):
