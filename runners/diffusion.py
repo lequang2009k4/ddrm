@@ -339,7 +339,7 @@ class Diffusion(object):
         avg_psnr = avg_psnr / (idx_so_far - idx_init)
         avg_lpips = avg_lpips / (idx_so_far - idx_init)
         print("Total Average PSNR: %.2f" % avg_psnr)
-        print("Total Average LPIPS: %.2f" % avg_lpips)
+        print("Total Average LPIPS: %.4f" % avg_lpips)
 
 
 
