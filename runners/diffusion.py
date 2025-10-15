@@ -326,9 +326,11 @@ class Diffusion(object):
                         mse = torch.mean((x[i][j].to(self.device) - orig) ** 2)
                         psnr = 10 * torch.log10(1 / mse)
                         avg_psnr += psnr
-            lpips_final = torch.squeeze(loss_fn_vgg(x[0].to('cuda'), x_orig.to('cuda'))).detach().cpu().numpy()
-            avg_lpips += lpips_final
+            lpips_final = loss_fn_vgg(x[0].to('cuda'), x_orig.to('cuda'))
+            lpips_final = torch.squeeze(lpips_final).detach().cpu().numpy()
+            lpips_final = float(np.mean(lpips_final))
 
+            avg_lpips += lpips_final
             idx_so_far += y_0.shape[0]
 
             # pbar.set_description("PSNR: %.2f" % (avg_psnr / (idx_so_far - idx_init)))
@@ -337,7 +339,7 @@ class Diffusion(object):
         avg_psnr = avg_psnr / (idx_so_far - idx_init)
         avg_lpips = avg_lpips / (idx_so_far - idx_init)
         print("Total Average PSNR: %.2f" % avg_psnr)
-        print("Total Average LPIPS: %.2f" % float(avg_lpips.mean()))
+        print("Total Average LPIPS: %.2f" % avg_lpips)
 
 
 
